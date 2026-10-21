@@ -1,0 +1,98 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/roboto-mono/400.css";
+@import "@fontsource/roboto-mono/500.css";
+@import "@fontsource/roboto-mono/700.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --text-display: 2.6875rem;
+    --text-display--line-height: 70px;
+    --text-tiny: 0.625rem;
+    --text-tiny--line-height: 1;
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-ink: var(--ink);
+    --color-surface-card: var(--surface-card);
+    --color-surface-dark: var(--surface-dark);
+    --color-border-soft: var(--border-soft);
+    --color-text-accent: var(--text-accent);
+    --color-text-secondary: var(--text-secondary);
+    --color-gold: var(--gold);
+    --color-elevated: var(--elevated);
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+    color-scheme: dark;
+
+    --ink: #140d0a;
+    --surface-card: #241612;
+    --surface-dark: #38220f;
+    --border-soft: #55321f;
+    --text-accent: #e89b55;
+    --text-secondary: #cfb28c;
+    --gold: #b39463;
+    --elevated: #fbfbfb;
+
+    --background: var(--ink);
+    --foreground: #f7f3ec;
+    --card: var(--surface-card);
+    --card-foreground: var(--foreground);
+    --popover: var(--surface-card);
+    --popover-foreground: var(--foreground);
+    --primary: #d28a4c;
+    --primary-foreground: var(--ink);
+    --secondary: var(--surface-dark);
+    --secondary-foreground: var(--foreground);
+    --muted: var(--surface-card);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--surface-dark);
+    --accent-foreground: var(--foreground);
+    /* o Figma não tem cor de erro */
+    --destructive: #e5484d;
+    --border: #3f2319;
+    --input: var(--border-soft);
+    --ring: var(--primary);
+    --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

@@ -18,6 +18,16 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['../*'], message: 'Use o alias @/ em vez de caminho relativo com ../' },
+          ],
+        },
+      ],
+    },
   },
   {
     // os componentes do shadcn exportam o cva junto

@@ -77,7 +77,6 @@
     --muted-foreground: var(--text-secondary);
     --accent: var(--surface-dark);
     --accent-foreground: var(--foreground);
-    /* o Figma não tem cor de erro */
     --destructive: #e5484d;
     --border: #3f2319;
     --input: var(--border-soft);

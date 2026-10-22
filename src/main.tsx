@@ -3,7 +3,9 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { queryClient } from '@/lib/query-client'
+import { endSession } from '@/features/auth/session'
+import { queryClient, setSessionLostHandler } from '@/lib/query-client'
+import { withoutAuthParams } from '@/lib/redirect'
 import { routeTree } from './routeTree.gen'
 
 const router = createRouter({ routeTree })
@@ -13,6 +15,17 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+
+// sessão expirada em qualquer requisição: limpa tudo e abre o login guardando onde o usuário estava
+setSessionLostHandler(() => {
+  endSession()
+  const here = withoutAuthParams(router.state.location.href)
+  router.navigate({
+    to: '.',
+    search: (prev) => ({ ...prev, auth: 'login', redirect: here, reason: 'expired' }),
+    replace: true,
+  })
+})
 
 async function enableMocking() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') return

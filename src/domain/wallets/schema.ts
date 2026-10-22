@@ -4,7 +4,7 @@ import { networks, type Network } from '@/domain/catalog/schema'
 import { isoDate } from '@/domain/common/schema'
 import { ensName } from '@/domain/profile/schema'
 
-export const walletProviders = ['metamask', 'coinbase-wallet', 'phantom'] as const
+export const walletProviders = ['metamask', 'walletconnect', 'coinbase-wallet'] as const
 export const walletRoles = ['primary', 'secondary'] as const
 
 const evmAddress = /^0x[a-fA-F0-9]{40}$/

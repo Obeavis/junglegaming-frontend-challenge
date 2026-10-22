@@ -1,9 +1,12 @@
 import { http, HttpResponse } from 'msw'
 import { articlesHandlers } from './articles'
 import { authHandlers } from './auth'
+import { cartHandlers } from './cart'
 import { catalogHandlers } from './catalog'
 import { favoritesHandlers } from './favorites'
+import { ordersHandlers } from './orders'
 import { profileHandlers } from './profile'
+import { quoteHandlers } from './quote'
 import { walletsHandlers } from './wallets'
 
 export const handlers = [
@@ -12,6 +15,9 @@ export const handlers = [
   ...articlesHandlers,
   ...catalogHandlers,
   ...favoritesHandlers,
+  ...cartHandlers,
+  ...quoteHandlers,
+  ...ordersHandlers,
   ...profileHandlers,
   ...walletsHandlers,
 ]

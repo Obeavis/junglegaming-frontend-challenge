@@ -221,7 +221,7 @@ export function buildCatalog() {
         standard: row.network === 'solana' ? 'Metaplex' : 'ERC-721',
         verified: true,
       },
-      maxPerOrder: 5,
+      maxPerOrder: 10,
     })
 
     stars.forEach((rating, i) => {

@@ -2,7 +2,7 @@ import type { Wallet } from '@/domain/wallets/schema'
 
 export type WalletRecord = Wallet & { userId: string }
 
-// a Marina tem a principal; o Theo não tem nenhuma
+// a Marina tem a principal e a reserva; o Theo não tem nenhuma
 export function createWallets(): WalletRecord[] {
   return [
     {
@@ -19,6 +19,22 @@ export function createWallets(): WalletRecord[] {
       referralCode: 'KURIO26',
       email: 'marina@kurio.dev',
       ensName: 'marina',
+      connection: null,
+    },
+    {
+      id: 'wal_marina_reserve',
+      userId: 'usr_marina',
+      role: 'secondary',
+      displayName: 'Marina Costa',
+      alias: 'Reserva',
+      network: 'polygon',
+      profileName: 'marina',
+      address: '0x9d3e5f7a1b2c4d6e8f0a1b3c5d7e9f2a4b6c8d0e',
+      secondaryAddress: '',
+      provider: 'walletconnect',
+      referralCode: 'KURIO26',
+      email: 'marina@kurio.dev',
+      ensName: 'nova-kurio',
       connection: null,
     },
   ]

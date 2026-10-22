@@ -11,11 +11,21 @@ export const scenarios = [
   'offline',
   'timeout',
   'session-expired',
+  'wallet-rejected',
 ] as const
 
 export type ScenarioName = (typeof scenarios)[number]
 
-export type Endpoint = 'nfts' | 'featured' | 'detail' | 'reviews' | 'articles' | 'auth'
+export type Endpoint =
+  | 'nfts'
+  | 'featured'
+  | 'detail'
+  | 'reviews'
+  | 'articles'
+  | 'auth'
+  | 'favorites'
+  | 'profile'
+  | 'wallets'
 
 const KEY = 'kurio.mock.scenario'
 const ON_KEY = 'kurio.mock.scenario.on'

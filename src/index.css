@@ -7,6 +7,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+    --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+
+    @keyframes shimmer {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(100%);
+        }
+    }
+}
+
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -31,6 +44,7 @@
     --color-accent: var(--accent);
     --color-accent-foreground: var(--accent-foreground);
     --color-destructive: var(--destructive);
+    --color-warning: var(--warning);
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
@@ -78,6 +92,7 @@
     --accent: var(--surface-dark);
     --accent-foreground: var(--foreground);
     --destructive: #e5484d;
+    --warning: #f3cf58;
     --border: #3f2319;
     --input: var(--border-soft);
     --ring: var(--primary);
@@ -93,5 +108,11 @@
   }
   html {
     @apply font-sans;
+  }
+  /* o Tailwind v4 deixou de pôr cursor de mão nos botões */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  [role="tab"] {
+    cursor: pointer;
   }
 }

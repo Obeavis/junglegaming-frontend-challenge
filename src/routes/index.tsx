@@ -1,13 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import PageShell from '@/components/layout/page-shell'
 
 export const Route = createFileRoute('/')({
-  component: HomePage,
+  component: () => <PageShell title="NFT Marketplace" />,
 })
-
-function HomePage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-display font-bold">NFT Marketplace</h1>
-    </main>
-  )
-}

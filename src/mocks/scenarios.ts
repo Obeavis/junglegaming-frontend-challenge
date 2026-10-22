@@ -12,6 +12,10 @@ export const scenarios = [
   'timeout',
   'session-expired',
   'wallet-rejected',
+  'price-changed',
+  'sold-out',
+  'order-timeout',
+  'payment-refused',
 ] as const
 
 export type ScenarioName = (typeof scenarios)[number]
@@ -26,6 +30,9 @@ export type Endpoint =
   | 'favorites'
   | 'profile'
   | 'wallets'
+  | 'cart'
+  | 'quote'
+  | 'orders'
 
 const KEY = 'kurio.mock.scenario'
 const ON_KEY = 'kurio.mock.scenario.on'
@@ -56,7 +63,7 @@ export function setScenario(name: ScenarioName, on: Endpoint[] = []) {
   storage.set(ON_KEY, on.join(','))
 }
 
-const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 // atrasos (ms) usados em ordem, um por requisição
 const normalDelays = [90, 150, 120, 200]

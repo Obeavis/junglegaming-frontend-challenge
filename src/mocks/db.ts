@@ -26,7 +26,8 @@ export type OrderRecord = Order & {
   idempotencyKey: string
   fingerprint: string
   outcome: 'confirmed' | 'refused'
-  settleAt: number
+  // null: só resolve quando o teste mandar (cenário manual-settlement)
+  settleAt: number | null
 }
 
 export interface StoredSession {

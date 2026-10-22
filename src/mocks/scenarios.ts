@@ -16,23 +16,29 @@ export const scenarios = [
   'sold-out',
   'order-timeout',
   'payment-refused',
+  'manual-settlement',
+  'socket-offline',
 ] as const
 
 export type ScenarioName = (typeof scenarios)[number]
 
-export type Endpoint =
-  | 'nfts'
-  | 'featured'
-  | 'detail'
-  | 'reviews'
-  | 'articles'
-  | 'auth'
-  | 'favorites'
-  | 'profile'
-  | 'wallets'
-  | 'cart'
-  | 'quote'
-  | 'orders'
+export const endpoints = [
+  'nfts',
+  'featured',
+  'detail',
+  'reviews',
+  'articles',
+  'auth',
+  'favorites',
+  'profile',
+  'wallets',
+  'cart',
+  'quote',
+  'orders',
+  'socket',
+] as const
+
+export type Endpoint = (typeof endpoints)[number]
 
 const KEY = 'kurio.mock.scenario'
 const ON_KEY = 'kurio.mock.scenario.on'

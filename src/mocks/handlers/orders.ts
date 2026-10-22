@@ -1,84 +1,13 @@
 import { http, HttpResponse } from 'msw'
-import type { Network } from '@/domain/catalog/schema'
 import { createOrderRequest, order, orderStatuses } from '@/domain/orders/schema'
 import { mulEth } from '@/lib/eth'
 import { requireSession } from '@/mocks/auth'
 import { getDb, saveDb, type OrderRecord } from '@/mocks/db'
+import { repriceNft, touchNft } from '@/mocks/nfts'
+import { SETTLE_AFTER_MS, scheduleSettlement, settleDue } from '@/mocks/orders'
 import { buildQuote, createQuote, detectChanges, findEdition } from '@/mocks/quote'
 import { apiError, notFound, validationError } from '@/mocks/responses'
 import { getScenario, setScenario, simulate, sleep } from '@/mocks/scenarios'
-
-const SETTLE_AFTER_MS = 3000
-
-const explorers: Record<Network, string> = {
-  ethereum: 'https://etherscan.io/tx/',
-  polygon: 'https://polygonscan.com/tx/',
-  solana: 'https://solscan.io/tx/',
-}
-
-function newTxHash() {
-  const bytes = crypto.getRandomValues(new Uint8Array(32))
-  return `0x${Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')}`
-}
-
-function refusalReason(record: OrderRecord) {
-  if (record.outcome === 'refused') return 'A carteira recusou o pagamento. Nada foi cobrado.'
-
-  const soldOut = record.items.some((item) => {
-    const available = findEdition(item.nftId, item.editionId)?.edition.available
-    return available != null && available < item.quantity
-  })
-  return soldOut ? 'Uma das edições esgotou antes da confirmação. Nada foi cobrado.' : null
-}
-
-function applyPurchase(record: OrderRecord) {
-  const db = getDb()
-  const mine = db.carts[record.userId]
-
-  for (const item of record.items) {
-    const found = findEdition(item.nftId, item.editionId)
-    if (found) {
-      const { nft, edition } = found
-      if (edition.available !== null) edition.available -= item.quantity
-      nft.soldOut = nft.editions.every((e) => e.available === 0)
-      nft.version++
-    }
-
-    const inCart = mine?.items.find((c) => c.nftId === item.nftId && c.editionId === item.editionId)
-    if (inCart) inCart.quantity -= item.quantity
-  }
-
-  if (mine) {
-    mine.items = mine.items.filter((c) => c.quantity > 0)
-    if (!mine.items.length) mine.coupon = null
-  }
-}
-
-// o pedido fica pendente até o prazo; quem consulta depois do prazo já vê o resultado
-function settleDue() {
-  const now = Date.now()
-  let changed = false
-
-  for (const record of getDb().orders) {
-    if (record.status !== 'pending' || record.settleAt > now) continue
-
-    const reason = refusalReason(record)
-    record.version++
-    record.updatedAt = new Date(now).toISOString()
-    if (reason) {
-      record.status = 'refused'
-      record.failureReason = reason
-    } else {
-      record.status = 'confirmed'
-      record.txHash = newTxHash()
-      record.explorerUrl = explorers[record.network] + record.txHash
-      applyPurchase(record)
-    }
-    changed = true
-  }
-
-  if (changed) saveDb()
-}
 
 // cenários de uma vez só: alteram o catálogo antes da revalidação para a compra falhar de verdade
 function disturbCatalog(items: { nftId: string; editionId: string }[]) {
@@ -87,12 +16,11 @@ function disturbCatalog(items: { nftId: string; editionId: string }[]) {
   if (!first) return
 
   if (scenario === 'price-changed') {
-    first.edition.price = mulEth(first.edition.price, 1.1)
-    first.nft.version++
+    repriceNft(first.nft, mulEth(first.nft.price, 1.1))
     setScenario('default')
   } else if (scenario === 'sold-out') {
     first.edition.available = 0
-    first.nft.version++
+    touchNft(first.nft)
     setScenario('default')
   }
 }
@@ -197,10 +125,11 @@ export const ordersHandlers = [
       idempotencyKey: key,
       fingerprint,
       outcome: getScenario('orders') === 'payment-refused' ? 'refused' : 'confirmed',
-      settleAt: now + SETTLE_AFTER_MS,
+      settleAt: getScenario('orders') === 'manual-settlement' ? null : now + SETTLE_AFTER_MS,
     }
     db.orders.push(created)
     saveDb()
+    scheduleSettlement(created)
 
     // a resposta chega depois do timeout do cliente, mas o pedido já foi criado
     if (getScenario('orders') === 'order-timeout') {

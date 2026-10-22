@@ -1,14 +1,14 @@
 import { z } from 'zod'
 import { isoDate } from '@/domain/common/schema'
 
-const username = z
+export const username = z
   .string()
   .trim()
   .min(3, 'Use pelo menos 3 caracteres')
   .max(24, 'Use no máximo 24 caracteres')
   .regex(/^[a-zA-Z0-9_.]+$/, 'Use apenas letras, números, ponto e sublinhado')
 
-const email = z.string().trim().toLowerCase().pipe(z.email('Digite um e-mail válido'))
+export const email = z.string().trim().toLowerCase().pipe(z.email('Digite um e-mail válido'))
 
 export const password = z
   .string()

@@ -4,9 +4,10 @@ import { storage } from '@/lib/storage'
 import { buildArticles } from '@/mocks/data/articles'
 import { buildCatalog } from '@/mocks/data/catalog'
 import { createUsers, type StoredUser } from '@/mocks/fixtures/users'
+import { createWallets, initialFavorites, type WalletRecord } from '@/mocks/fixtures/wallets'
 
 // sobe o número quando o formato do banco muda, para ignorar dados antigos do navegador
-const KEY = 'kurio.mock.db.v7'
+const KEY = 'kurio.mock.db.v8'
 
 export type ReviewRecord = Review & { nftId: string }
 
@@ -22,6 +23,8 @@ export interface Db {
   articles: ArticleSummary[]
   users: StoredUser[]
   sessions: StoredSession[]
+  favorites: Record<string, string[]>
+  wallets: WalletRecord[]
 }
 
 let cache: Db | null = null
@@ -32,6 +35,8 @@ function seed(): Db {
     articles: buildArticles(),
     users: createUsers(),
     sessions: [],
+    favorites: initialFavorites,
+    wallets: createWallets(),
   }
 }
 

@@ -10,18 +10,8 @@ import {
   requireSession,
 } from '@/mocks/auth'
 import { getDb, saveDb } from '@/mocks/db'
-import { apiError } from '@/mocks/responses'
+import { apiError, validationError } from '@/mocks/responses'
 import { simulate } from '@/mocks/scenarios'
-import type { z } from 'zod'
-
-function validationError(error: z.ZodError) {
-  const fields: Record<string, string> = {}
-  for (const issue of error.issues) {
-    const key = String(issue.path[0] ?? 'form')
-    fields[key] ??= issue.message
-  }
-  return apiError(422, 'VALIDATION', 'Revise os campos destacados.', { fields })
-}
 
 export const authHandlers = [
   http.post('/api/auth/signup', async ({ request }) => {
@@ -47,6 +37,9 @@ export const authHandlers = [
       id: `usr_${crypto.randomUUID().slice(0, 8)}`,
       username,
       email,
+      displayName: username,
+      ensName: '',
+      walletNickname: '',
       avatar: null,
       salt,
       passwordHash: await hashPassword(salt, password),

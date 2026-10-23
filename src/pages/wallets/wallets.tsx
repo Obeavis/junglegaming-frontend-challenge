@@ -68,7 +68,7 @@ function Wallets() {
 
   return (
     <div className="mx-auto w-full max-w-300 px-6 py-6 md:py-10 xl:px-0">
-      <MobilePageHeader title="Carteiras" />
+      <MobilePageHeader title="Carteiras" toHome />
       <h1 className="sr-only">Carteiras</h1>
 
       <div className="grid gap-8 md:grid-cols-[17rem_1fr]">

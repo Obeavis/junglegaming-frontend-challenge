@@ -4,7 +4,7 @@ import TextField from '@/components/form/text-field'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { networks } from '@/domain/catalog/schema'
-import { walletProviders, type WalletInput } from '@/domain/wallets/schema'
+import { ensSuffixes, walletProviders, type WalletInput } from '@/domain/wallets/schema'
 import { networkLabels, providerLabels } from '@/features/catalog/labels'
 
 const selectClass =
@@ -36,6 +36,42 @@ function SelectField({
       </select>
       {error && (
         <p id={errorId} role="alert" className="text-xs text-destructive">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function EnsField({ form }: { form: UseFormReturn<WalletInput> }) {
+  const {
+    register,
+    formState: { errors },
+  } = form
+  const error = errors.ensName?.message
+
+  return (
+    <div className="grid gap-1.5">
+      <Label htmlFor="ensName">{required('Nome ENS')}</Label>
+      <div className="flex">
+        <Input
+          id="ensName"
+          aria-required
+          aria-invalid={!!error}
+          aria-describedby={error ? 'ensName-error' : undefined}
+          className={`${inputClass} rounded-r-none`}
+          {...register('ensName')}
+        />
+        <select aria-label="Domínio do nome ENS" className={`${selectClass} w-28 rounded-l-none border-l-0`} {...register('ensSuffix')}>
+          {ensSuffixes.map((suffix) => (
+            <option key={suffix} value={suffix} className="bg-card">
+              .{suffix}
+            </option>
+          ))}
+        </select>
+      </div>
+      {error && (
+        <p id="ensName-error" role="alert" className="text-xs text-destructive">
           {error}
         </p>
       )}
@@ -92,30 +128,7 @@ function WalletFields({ form }: { form: UseFormReturn<WalletInput> }) {
       <TextField label={required('Código de indicação')} className={inputClass} aria-required error={errors.referralCode?.message} {...register('referralCode')} />
       <TextField label={required('E-mail')} type="email" className={inputClass} aria-required error={errors.email?.message} {...register('email')} />
 
-      <div className="grid gap-1.5">
-        <Label htmlFor="ensName">{required('Nome ENS')}</Label>
-        <div className="flex">
-          <Input
-            id="ensName"
-            aria-required
-            aria-invalid={!!errors.ensName}
-            aria-describedby={errors.ensName ? 'ensName-error' : undefined}
-            className={`${inputClass} rounded-r-none`}
-            {...register('ensName')}
-          />
-          <select
-            aria-label="Domínio ENS"
-            className={`${selectClass} w-20 rounded-l-none border-l-0`}
-          >
-            <option className="bg-card">.eth</option>
-          </select>
-        </div>
-        {errors.ensName && (
-          <p id="ensName-error" role="alert" className="text-xs text-destructive">
-            {errors.ensName.message}
-          </p>
-        )}
-      </div>
+      <EnsField form={form} />
     </div>
   )
 }

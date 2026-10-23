@@ -10,7 +10,7 @@ import { createUsers, type StoredUser } from '@/mocks/fixtures/users'
 import { createWallets, initialFavorites, type WalletRecord } from '@/mocks/fixtures/wallets'
 
 // sobe o número quando o formato do banco muda, para ignorar dados antigos do navegador
-const KEY = 'kurio.mock.db.v11'
+const KEY = 'kurio.mock.db.v13'
 
 export type ReviewRecord = Review & { nftId: string }
 

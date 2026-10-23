@@ -6,6 +6,7 @@ import { ensName } from '@/domain/profile/schema'
 
 export const walletProviders = ['metamask', 'walletconnect', 'coinbase-wallet'] as const
 export const walletRoles = ['primary', 'secondary'] as const
+export const ensSuffixes = ['eth', 'btc', 'sol', 'crypto', 'bnb'] as const
 
 const evmAddress = /^0x[a-fA-F0-9]{40}$/
 const addressPattern: Record<Network, RegExp> = {
@@ -28,6 +29,7 @@ export const walletFields = z.object({
   referralCode: z.string().trim().regex(/^[A-Za-z0-9]{4,12}$/, 'Use de 4 a 12 letras ou números'),
   email,
   ensName,
+  ensSuffix: z.enum(ensSuffixes),
 })
 
 const addressMatchesNetwork = (w: { network: Network; address: string }) =>

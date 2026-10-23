@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { Plug, Unplug } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import type { Network } from '@/domain/catalog/schema'
@@ -84,11 +85,11 @@ function WalletCards({ userId, wallets, selected, network, onSelect }: WalletCar
         </p>
         {connected ? (
           <Button type="button" variant="outline" size="sm" disabled={disconnect.isPending} onClick={() => disconnect.mutate()}>
-            Desconectar
+            <Unplug aria-hidden /> Desconectar
           </Button>
         ) : (
           <Button type="button" size="sm" disabled={connect.isPending} onClick={() => connect.mutate()}>
-            {connect.isPending ? 'Conectando…' : 'Conectar carteira'}
+            <Plug aria-hidden /> {connect.isPending ? 'Conectando…' : `Conectar na ${networkLabels[network]}`}
           </Button>
         )}
       </div>

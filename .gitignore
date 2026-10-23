@@ -25,3 +25,6 @@ dist-ssr
 
 # TanStack Router temp files
 .tanstack
+
+# Playwright
+e2e/.results

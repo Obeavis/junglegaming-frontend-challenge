@@ -69,7 +69,7 @@ const editionTemplate = [
 ]
 
 const reviewers = [
-  { id: 'usr_marina', name: 'Marina Costa' },
+  { id: 'usr_juliana', name: 'Juliana Costa' },
   { id: 'usr_theo', name: 'Theo Marlowe' },
   { id: 'usr_clara', name: 'Clara Nogueira' },
   { id: 'usr_bruno', name: 'Bruno Tavares' },

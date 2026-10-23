@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import PageShell from '@/components/layout/page-shell'
 import { requireSession } from '@/features/auth/guard'
+import Wallets from '@/pages/wallets'
 
 export const Route = createFileRoute('/wallets')({
   beforeLoad: requireSession,
-  component: () => <PageShell title="Carteiras" />,
+  component: Wallets,
 })

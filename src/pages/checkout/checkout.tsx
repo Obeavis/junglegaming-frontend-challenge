@@ -14,7 +14,7 @@ import { cartKey } from '@/domain/cart/queries'
 import { createOrder } from '@/domain/orders/api'
 import type { CreateOrderRequest } from '@/domain/orders/schema'
 import { quoteQuery } from '@/domain/quote/queries'
-import { connectWallet, createWallet, updateWallet } from '@/domain/wallets/api'
+import { updateWallet } from '@/domain/wallets/api'
 import { walletsKey, walletsQuery } from '@/domain/wallets/queries'
 import { walletFields, walletInput, walletProviders, type Wallet, type WalletInput } from '@/domain/wallets/schema'
 import { useSession } from '@/features/auth/use-session'
@@ -54,25 +54,21 @@ function Checkout() {
   const form = useForm<WalletInput>({ resolver: zodResolver(walletInput), values: wallet && toInput(wallet) })
   const network = form.watch('network') ?? wallet?.network ?? 'ethereum'
   const provider = form.watch('provider')
-  const connected = !wallet || wallet.connection?.network === network
+  const connected = !!wallet && wallet.connection?.network === network
 
   const current = quote.data
   const hasIssue = !!current?.items.some((item) => item.issue)
 
   const place = useMutation({
     mutationFn: async (values: WalletInput) => {
-      if (!current) throw new Error('Pedido incompleto.')
-      let target = wallet
-      if (!target) {
-        target = await createWallet({ ...values, role: 'primary' })
-        await connectWallet(target.id, values.network)
-      } else if (form.formState.isDirty) {
-        await updateWallet(target.id, values)
+      if (!current || !wallet) throw new Error('Pedido incompleto.')
+      if (form.formState.isDirty) {
+        await updateWallet(wallet.id, values)
+        queryClient.invalidateQueries({ queryKey: walletsKey(userId) })
       }
-      queryClient.invalidateQueries({ queryKey: walletsKey(userId) })
       const body: CreateOrderRequest = {
         quoteId: current.id,
-        walletId: target.id,
+        walletId: wallet.id,
         network: values.network,
         note: note.trim() || undefined,
       }
@@ -127,9 +123,11 @@ function Checkout() {
             <h1 id="collector" className="text-sm font-bold max-md:sr-only">
               Perfil do colecionador
             </h1>
-            <div className={wallet ? 'max-md:hidden' : undefined}>
-              <WalletFields form={form} />
-            </div>
+            {wallet && (
+              <div className="max-md:hidden">
+                <WalletFields form={form} />
+              </div>
+            )}
           </section>
 
           <section aria-label="Carteira" className="space-y-4">
@@ -145,9 +143,12 @@ function Checkout() {
             ) : wallet ? (
               <WalletCards userId={userId} wallets={wallets.data} selected={wallet} network={network} onSelect={setWalletId} />
             ) : (
-              <p className="text-xs text-text-secondary">
-                Você ainda não tem carteiras. Preencha o perfil: a carteira será cadastrada e conectada ao confirmar a compra.
-              </p>
+              <div className="rounded-lg border border-dashed border-border p-4 text-sm">
+                <p>Você ainda não cadastrou carteiras.</p>
+                <Link to="/wallets" className="mt-2 inline-block font-bold text-text-accent hover:underline">
+                  Cadastrar carteira
+                </Link>
+              </div>
             )}
           </section>
 
@@ -192,7 +193,14 @@ function Checkout() {
                   provider === item && 'border-primary',
                 )}
               >
-                <input type="radio" value={item} className="sr-only" {...form.register('provider')} />
+                <input
+                  type="radio"
+                  name="provider-choice"
+                  value={item}
+                  checked={provider === item}
+                  onChange={() => form.setValue('provider', item, { shouldDirty: true, shouldValidate: true })}
+                  className="sr-only"
+                />
                 <span aria-hidden className={cn('size-3 shrink-0 rounded-full border-2 border-primary', provider === item && 'bg-primary')} />
                 {providerLabels[item]}
               </label>
@@ -214,7 +222,7 @@ function Checkout() {
               Alguns itens não estão mais disponíveis. Ajuste o carrinho para continuar.
             </p>
           )}
-          {!connected && (
+          {wallet && !connected && (
             <p role="status" className="text-xs text-text-secondary">
               Conecte a carteira na rede selecionada para enviar o pedido.
             </p>

@@ -30,6 +30,7 @@ function RealtimeSync() {
 
     const listen = (io: Socket) => {
       io.on('connect', () => {
+        document.documentElement.dataset.realtime = 'connected'
         // depois de uma queda os eventos perdidos não voltam: relê do REST o que está em uso
         if (connectedOnce) {
           queryClient.invalidateQueries({ queryKey: catalogKeys.all })
@@ -42,7 +43,10 @@ function RealtimeSync() {
         }
         connectedOnce = true
       })
-      io.on('disconnect', () => announce('Conexão em tempo real perdida. Tentando reconectar.'))
+      io.on('disconnect', () => {
+        document.documentElement.dataset.realtime = 'disconnected'
+        announce('Conexão em tempo real perdida. Tentando reconectar.')
+      })
 
       io.on('nft.updated', (event) => {
         if (!guard.accept(event)) return
@@ -74,6 +78,7 @@ function RealtimeSync() {
 
     return () => {
       closed = true
+      delete document.documentElement.dataset.realtime
       socket?.removeAllListeners()
       socket?.disconnect()
       guard.clear()

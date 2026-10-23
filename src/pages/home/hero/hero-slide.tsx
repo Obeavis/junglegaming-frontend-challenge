@@ -21,10 +21,10 @@ function HeroSlide({ content, item, extra, isPending, priority }: HeroSlideProps
         <p className="pb-3 text-xs motion-safe:animate-copy-reveal md:self-end md:pb-6">Bem-vindo à Kurio</p>
 
         <div>
-          <h1 className="text-3xl leading-snug font-bold whitespace-pre-line uppercase motion-safe:animate-copy-reveal [--delay:0.11s] max-md:text-lg md:text-[2rem] md:leading-[1.4]">
+          <h2 className="text-3xl leading-snug font-bold whitespace-pre-line uppercase motion-safe:animate-copy-reveal [--delay:0.11s] max-md:text-lg md:text-[2rem] md:leading-[1.4]">
             <span className="md:hidden">{content.compact.title}</span>
             <span className="max-md:hidden">{content.title}</span>
-          </h1>
+          </h2>
           <p className="mt-3 max-w-md text-xs leading-relaxed text-text-secondary md:mt-6 motion-safe:animate-copy-reveal [--delay:0.22s]">
             <span className="md:hidden">{content.compact.text}</span>
             <span className="max-md:hidden">{content.text}</span>
@@ -51,7 +51,7 @@ function HeroSlide({ content, item, extra, isPending, priority }: HeroSlideProps
             <img
               src={item.nft.image.url}
               srcSet={imageSrcSet(item.nft.image)}
-              sizes="(min-width: 1024px) 30rem, (min-width: 768px) 26rem, 100vw"
+              sizes="(min-width: 1024px) 30rem, (min-width: 768px) 26rem, 8rem"
               width={item.nft.image.width}
               height={item.nft.image.height}
               alt={item.nft.name}

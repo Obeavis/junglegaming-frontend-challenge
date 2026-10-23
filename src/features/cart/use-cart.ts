@@ -43,6 +43,8 @@ export function useCart() {
 
   const save = (cart: Cart) => queryClient.setQueryData(cartKey(userId), cart)
   const fail = (error: Error) => toast.error(error.message)
+  // uma leitura em voo chegaria depois da alteração e desfaria o valor novo
+  const settle = () => queryClient.cancelQueries({ queryKey: cartKey(userId) })
 
   const setQuantity = useMutation({
     mutationFn: async ({ item, quantity }: { item: CartItem; quantity: number }) => {
@@ -52,6 +54,7 @@ export function useCart() {
       }
       return updateCartItem(item.id, quantity)
     },
+    onMutate: settle,
     onSuccess: (cart) => cart && save(cart),
     onError: fail,
   })
@@ -64,16 +67,18 @@ export function useCart() {
       }
       return removeCartItem(item.id)
     },
+    onMutate: settle,
     onSuccess: (cart) => cart && save(cart),
     onError: fail,
   })
 
   const coupon = useMutation({
     mutationFn: (code: string | null) => (code ? applyCoupon(code) : removeCoupon()),
+    onMutate: settle,
     onSuccess: save,
   })
 
-  const acknowledge = useMutation({ mutationFn: acknowledgePrices, onSuccess: save, onError: fail })
+  const acknowledge = useMutation({ mutationFn: acknowledgePrices, onMutate: settle, onSuccess: save, onError: fail })
 
   return {
     items,

@@ -106,9 +106,9 @@ function MockPanel() {
     })
 
   return (
-    <div className="fixed right-4 bottom-4 z-[60] flex flex-col items-end gap-3 max-md:bottom-24">
+    <div className="fixed right-4 bottom-4 z-[60] flex flex-col items-end gap-3 max-md:top-[45%] max-md:right-2 max-md:bottom-auto max-md:flex-col-reverse">
       {open && (
-        <section aria-label="Painel de mocks" className="max-h-[70dvh] w-88 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-xl border border-border-soft bg-card p-4 text-xs shadow-2xl">
+        <section aria-label="Painel de mocks" className="max-h-[70dvh] w-88 max-w-[calc(100vw-1rem)] overflow-y-auto max-md:max-h-[40dvh] rounded-xl border border-border-soft bg-card p-4 text-xs shadow-2xl">
           <div role="tablist" aria-label="Seções do painel" className="mb-4 flex gap-1 border-b border-border-soft">
             {tabs.map(({ id, label }) => (
               <button

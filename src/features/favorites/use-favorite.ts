@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { addFavorite, removeFavorite } from '@/domain/favorites/api'
 import { favoritesKey, favoritesQuery } from '@/domain/favorites/queries'
 import type { Favorites } from '@/domain/favorites/schema'
+import { sessionQuery } from '@/domain/auth/queries'
 import { useSession } from '@/features/auth/use-session'
 import { withoutAuthParams } from '@/lib/redirect'
 
@@ -33,8 +34,10 @@ export function useFavorite(nftId: string) {
     onSettled: () => queryClient.invalidateQueries({ queryKey: favoritesKey(userId) }),
   })
 
-  const toggle = () => {
-    if (!session) {
+  const toggle = async () => {
+    // a sessão pode ainda estar carregando logo depois de um refresh
+    const current = session ?? (await queryClient.ensureQueryData(sessionQuery).catch(() => null))
+    if (!current) {
       navigate({ to: '.', search: (prev) => ({ ...prev, auth: 'login', redirect: withoutAuthParams(href) }) })
       return
     }

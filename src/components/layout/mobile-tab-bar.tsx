@@ -8,11 +8,14 @@ function MobileTabBar() {
   const count = useCartCount()
   const navigate = useNavigate()
   const onHome = useLocation({ select: (location) => location.pathname === '/' })
+  const inDetail = useLocation({ select: (location) => location.pathname.startsWith('/nft/') })
 
   const explore = async () => {
     if (!onHome) await navigate({ to: '/' })
     focusCatalogSearch()
   }
+
+  if (inDetail) return null
 
   return (
     <nav

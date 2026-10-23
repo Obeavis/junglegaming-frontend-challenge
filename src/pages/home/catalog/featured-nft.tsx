@@ -15,8 +15,8 @@ function FeaturedNft() {
   return (
     <section aria-labelledby="nft-destaque" className="mt-8 flex flex-1 flex-col">
       <Link
-        to="/nfts/$nftId"
-        params={{ nftId: nft.id }}
+        to="/nft/$id"
+        params={{ id: nft.id }}
         className="group flex flex-1 flex-col overflow-hidden rounded-lg bg-surface-dark outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <div className="p-4">

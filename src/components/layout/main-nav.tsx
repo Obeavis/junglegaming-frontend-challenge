@@ -12,6 +12,7 @@ interface Bar {
 
 function MainNav() {
   const onHome = useLocation({ select: (location) => location.pathname === '/' })
+  const inDetail = useLocation({ select: (location) => location.pathname.startsWith('/nft/') })
   const navigate = useNavigate()
   const inMarket = useScrolledPast('catalogo')
   const navRef = useRef<HTMLElement>(null)
@@ -34,7 +35,7 @@ function MainNav() {
     const observer = new ResizeObserver(measure)
     observer.observe(nav)
     return () => observer.disconnect()
-  }, [onHome, inMarket])
+  }, [onHome, inMarket, inDetail])
 
   const backToTop = (event: React.MouseEvent) => {
     if (!onHome) return
@@ -48,7 +49,7 @@ function MainNav() {
       <NavLink current={onHome && !inMarket} onClick={backToTop}>
         Início
       </NavLink>
-      <NavLink hash="catalogo" current={onHome && inMarket}>
+      <NavLink hash="catalogo" current={(onHome && inMarket) || inDetail}>
         Mercado
       </NavLink>
       <button

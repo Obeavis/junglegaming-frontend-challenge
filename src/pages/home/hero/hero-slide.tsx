@@ -44,8 +44,8 @@ function HeroSlide({ content, item, extra, isPending, priority }: HeroSlideProps
         {isPending && <Skeleton className="aspect-square w-full" />}
         {item && (
           <Link
-            to="/nfts/$nftId"
-            params={{ nftId: item.nft.id }}
+            to="/nft/$id"
+            params={{ id: item.nft.id }}
             className="block md:tilt rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <img

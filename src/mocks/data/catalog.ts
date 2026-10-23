@@ -209,7 +209,7 @@ export function buildCatalog() {
       version: 1,
       summary: row.summary ?? `Obra digital da coleção ${collection.name}, verificada na rede ${row.network}.`,
       description: `${row.name} faz parte da coleção ${collection.name}, ${collection.blurb}. Cada atributo fica armazenado nos metadados do token.`,
-      gallery: [art, ...Object.values(artworks).filter((other) => other !== art)].map((a) => toImage(a.path)),
+      gallery: Array.from({ length: 4 }, () => toImage(art.path)),
       traits: row.traits ?? [
         { type: 'Acessório', value: art.accessory },
         { type: 'Roupa', value: art.outfit },

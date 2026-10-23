@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useParams, useRouter } from '@tanstack/react-router'
+import { useParams, useRouter } from '@tanstack/react-router'
 import { ChevronLeft, Heart } from 'lucide-react'
+import Breadcrumb from '@/components/layout/breadcrumb'
 import NotFound from '@/components/layout/not-found'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -40,9 +41,7 @@ function NftDetail() {
 
   return (
     <div className="mx-auto w-full max-w-300 max-md:pb-40 md:px-6 md:pt-10 xl:px-0">
-      <nav aria-label="Trilha" className="mb-4 hidden text-sm font-bold md:block">
-        <Link to="/">Início</Link> / <Link to="/" hash="catalogo">Mercado</Link>
-      </nav>
+      <Breadcrumb />
 
       <div className="max-md:rounded-b-[2rem] max-md:bg-card max-md:pt-5">
         <div className="flex items-center justify-between px-7 pb-4 md:hidden">

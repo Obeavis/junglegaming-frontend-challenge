@@ -12,7 +12,7 @@ interface Bar {
 
 function MainNav() {
   const onHome = useLocation({ select: (location) => location.pathname === '/' })
-  const inDetail = useLocation({ select: (location) => location.pathname.startsWith('/nft/') })
+  const inDetail = useLocation({ select: (location) => /^\/(nft|cart|checkout|orders)(\/|$)/.test(location.pathname) })
   const navigate = useNavigate()
   const inMarket = useScrolledPast('catalogo')
   const navRef = useRef<HTMLElement>(null)

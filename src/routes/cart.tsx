@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import PageShell from '@/components/layout/page-shell'
+import Cart from '@/pages/cart'
 
 export const Route = createFileRoute('/cart')({
-  component: () => <PageShell title="Carrinho de NFTs" />,
+  component: Cart,
 })

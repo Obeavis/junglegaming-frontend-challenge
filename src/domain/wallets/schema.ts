@@ -50,6 +50,7 @@ export const wallet = walletFields.extend({
   connection: connection.nullable(),
 })
 
+export type WalletProvider = (typeof walletProviders)[number]
 export type Wallet = z.infer<typeof wallet>
 export type WalletInput = z.infer<typeof walletInput>
 export type CreateWalletRequest = z.infer<typeof createWalletRequest>

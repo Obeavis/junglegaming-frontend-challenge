@@ -89,13 +89,18 @@ export const catalogQuery = z.object({
   page: z.number().int().positive().optional(),
 })
 
+export const priceRange = z.object({ min: ethAmount, max: ethAmount })
+
 export const facetCounts = z.object({
   categories: z.record(z.enum(categories), z.number().int()),
   networks: z.record(z.enum(networks), z.number().int()),
+  // ausente quando o backend ainda não calcula a faixa; null quando não sobra nenhum NFT
+  price: priceRange.nullable().optional(),
 })
 
 export const catalogPage = pageOf(nftSummary).extend({ facets: facetCounts })
 
+export type PriceRange = z.infer<typeof priceRange>
 export type FeaturedItem = z.infer<typeof featuredItem>
 export type Review = z.infer<typeof review>
 export type ReviewsPage = z.infer<typeof reviewsPage>

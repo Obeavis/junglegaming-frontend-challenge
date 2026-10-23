@@ -24,7 +24,7 @@ function TextField({ label, error, hideLabel, id, className, ...props }: TextFie
         id={fieldId}
         aria-invalid={!!error}
         aria-describedby={error ? errorId : undefined}
-        className={cn('h-11', className)}
+        className={cn('h-10', className)}
         {...props}
       />
       {error && (

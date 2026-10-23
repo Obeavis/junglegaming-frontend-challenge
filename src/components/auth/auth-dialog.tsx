@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
@@ -37,29 +38,40 @@ function AuthDialog() {
   return (
     <Dialog open={!!auth} onOpenChange={(open) => !open && close()}>
       <DialogContent
-        className="max-h-dvh content-start gap-6 overflow-y-auto border-border-soft bg-card p-6 sm:max-w-125 max-sm:top-0 max-sm:left-0 max-sm:h-dvh max-sm:w-screen max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none"
+        onOpenAutoFocus={(event) => {
+          if (!window.matchMedia('(min-width: 40rem)').matches) return
+          event.preventDefault()
+          ;(event.currentTarget as HTMLElement).querySelector('input')?.focus()
+        }}
+        className="max-h-dvh content-start gap-4 overflow-y-auto bg-card px-5 pb-14 pt-8 sm:rounded-lg sm:px-16 [&_[data-slot=dialog-close]]:text-primary [&_input]:rounded-md [&_input]:border-border [&_input]:placeholder:text-gold sm:max-w-md sm:border-b-[3px] sm:border-b-primary max-sm:top-0 max-sm:left-0 max-sm:h-dvh max-sm:w-screen max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:bg-background max-sm:px-6 max-sm:pt-16"
       >
         <DialogTitle className="sr-only">{auth === 'signup' ? 'Criar conta' : 'Entrar'}</DialogTitle>
         {auth && (
           <>
-            <div role="tablist" aria-label="Acesso à conta" className="flex gap-4 text-lg font-bold">
-              {tabs.map(({ mode, label }) => (
-                <button
-                  key={mode}
-                  type="button"
-                  role="tab"
-                  aria-selected={auth === mode}
-                  onClick={() => switchTo(mode)}
-                  className={cn(
-                    'rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                    auth === mode ? 'text-foreground' : 'text-text-accent',
-                  )}
-                >
-                  {label}
-                </button>
+            <div aria-hidden className="grid justify-items-center gap-10 sm:hidden">
+              <p className="text-3xl font-bold">KURIO</p>
+              <p className="text-lg font-bold">{auth === 'signup' ? 'Criar perfil de colecionador' : 'Entrar'}</p>
+            </div>
+            <div role="tablist" aria-label="Acesso à conta" className="flex items-center justify-center gap-3 text-base font-bold max-sm:hidden">
+              {tabs.map(({ mode, label }, i) => (
+                <Fragment key={mode}>
+                  {i > 0 && <span aria-hidden className="h-5 w-px bg-border-soft" />}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={auth === mode}
+                    onClick={() => switchTo(mode)}
+                    className={cn(
+                      'rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+                      auth === mode ? 'text-text-accent' : 'text-foreground',
+                    )}
+                  >
+                    {label}
+                  </button>
+                </Fragment>
               ))}
             </div>
-            <DialogDescription className="text-sm text-muted-foreground">
+            <DialogDescription className="text-center text-xs text-foreground max-sm:hidden">
               {descriptions[auth]}
             </DialogDescription>
             {reason === 'expired' && (
@@ -70,6 +82,16 @@ function AuthDialog() {
             <div role="tabpanel">
               {auth === 'login' ? <LoginForm onDone={done} /> : <SignupForm onDone={done} />}
             </div>
+            <p className="mt-4 text-center text-sm text-text-secondary sm:hidden">
+              {auth === 'login' ? 'Novo na Kurio? ' : 'Já tem uma conta? '}
+              <button
+                type="button"
+                onClick={() => switchTo(auth === 'login' ? 'signup' : 'login')}
+                className="rounded-sm underline underline-offset-4 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                {auth === 'login' ? 'Crie uma conta' : 'Entre'}
+              </button>
+            </p>
           </>
         )}
       </DialogContent>

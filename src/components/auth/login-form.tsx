@@ -53,7 +53,7 @@ function LoginForm({ onDone }: { onDone: () => void }) {
           {errors.root.message}
         </p>
       )}
-      <Button type="submit" size="lg" className="h-11" disabled={login.isPending}>
+      <Button type="submit" size="lg" className="h-10 rounded-md" disabled={login.isPending}>
         {login.isPending ? 'Entrando…' : 'Entrar'}
       </Button>
       <SocialButtons />

@@ -14,9 +14,9 @@ export function touchNft(nft: Nft) {
 
 // as edições mantêm a proporção que tinham com o preço-base
 export function repriceNft(nft: Nft, price: string) {
-  const ratio = new Big(price).div(nft.price)
   for (const edition of nft.editions) {
-    edition.price = normalizeEth(new Big(edition.price).times(ratio))
+    // multiplica antes de dividir: a razão sozinha vira uma dízima e o último dígito se perde
+    edition.price = normalizeEth(new Big(edition.price).times(price).div(nft.price))
   }
   nft.previousPrice = compareEth(price, nft.price) < 0 ? nft.price : null
   nft.price = normalizeEth(price)

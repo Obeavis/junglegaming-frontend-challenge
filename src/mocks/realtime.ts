@@ -9,6 +9,7 @@ import {
   type RealtimeEvent,
 } from '@/domain/realtime/schema'
 import { getDb, type OrderRecord } from '@/mocks/db'
+import { socketUrl } from '@/lib/socket-url'
 import { getScenario } from '@/mocks/scenarios'
 
 const PING_INTERVAL_MS = 20_000
@@ -30,9 +31,8 @@ interface Sent {
 const clients = new Set<Client>()
 let history: Sent[] = []
 
-const origin = globalThis.location?.origin ?? 'http://localhost'
-// o MSW ignora o caminho /socket.io/, então o link é só a origem
-const realtime = ws.link(import.meta.env.VITE_SOCKET_URL ?? origin.replace(/^http/, 'ws'))
+// o MSW compara só a origem: o prefixo /socket.io/ do cliente é descartado antes
+const realtime = ws.link(socketUrl)
 
 function userFromToken(token: string | null) {
   const session = getDb().sessions.find((s) => s.token === token)

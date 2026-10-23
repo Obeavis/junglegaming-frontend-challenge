@@ -3,7 +3,7 @@ import { outOfScope } from '@/lib/out-of-scope'
 
 function FooterHighlights() {
   return (
-    <div className="grid grid-cols-4 bg-card px-12 py-8">
+    <div className="grid grid-cols-2 gap-y-8 lg:grid-cols-4 bg-card px-12 py-8">
       <div className="grid content-start gap-3 border-r border-primary/60 pr-6">
         <span
           aria-hidden
@@ -17,7 +17,7 @@ function FooterHighlights() {
         </p>
       </div>
 
-      <div className="grid content-start gap-3 border-r border-primary/60 px-6">
+      <div className="grid content-start gap-3 border-r border-primary/60 px-6 max-lg:border-r-0">
         <span
           aria-hidden
           className="flex size-14 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground"

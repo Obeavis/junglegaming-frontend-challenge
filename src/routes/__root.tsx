@@ -5,7 +5,7 @@ import MobileTabBar from '@/components/layout/mobile-tab-bar'
 import NotFound from '@/components/layout/not-found'
 import RouteError from '@/components/layout/route-error'
 import { Toaster } from '@/components/ui/sonner'
-import AuthDialog from '@/features/auth/auth-dialog'
+import AuthDialog from '@/components/auth/auth-dialog'
 import { isLocalPath } from '@/lib/redirect'
 
 interface RootSearch {
@@ -36,7 +36,7 @@ function RootLayout() {
         Ir para o conteúdo
       </a>
       <Header />
-      <main id="conteudo" className="flex-1 pb-20 md:pb-0">
+      <main id="conteudo" className="flex-1 pb-28 md:pb-0">
         <Outlet />
       </main>
       <Footer />

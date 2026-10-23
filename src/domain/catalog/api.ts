@@ -34,6 +34,11 @@ export async function listFeatured(signal?: AbortSignal): Promise<FeaturedItem[]
   return featuredItem.array().parse(data)
 }
 
+export async function getSpotlight(signal?: AbortSignal): Promise<FeaturedItem> {
+  const { data } = await http.get('/nfts/spotlight', { signal })
+  return featuredItem.parse(data)
+}
+
 export async function getNft(id: string, signal?: AbortSignal): Promise<Nft> {
   const { data } = await http.get(`/nfts/${encodeURIComponent(id)}`, { signal })
   return nft.parse(data)

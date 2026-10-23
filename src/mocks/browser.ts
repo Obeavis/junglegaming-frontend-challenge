@@ -16,7 +16,15 @@ function resetFromUrl() {
   history.replaceState(null, '', url)
 }
 
+// o MSW chama registration.update() sem tratar a rejeição; o erro é inofensivo
+function ignoreWorkerUpdateFailure() {
+  window.addEventListener('unhandledrejection', (event) => {
+    if (String(event.reason?.message).includes('Failed to update a ServiceWorker')) event.preventDefault()
+  })
+}
+
 export async function startMocks() {
+  ignoreWorkerUpdateFailure()
   resetFromUrl()
   await worker.start({ onUnhandledRequest: 'bypass' })
 }

@@ -1,11 +1,13 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import Footer from '@/components/layout/footer'
 import Header from '@/components/layout/header'
+import LiveRegion from '@/components/layout/live-region'
 import MobileTabBar from '@/components/layout/mobile-tab-bar'
 import NotFound from '@/components/layout/not-found'
 import RouteError from '@/components/layout/route-error'
 import { Toaster } from '@/components/ui/sonner'
 import AuthDialog from '@/components/auth/auth-dialog'
+import RealtimeSync from '@/features/realtime/realtime-sync'
 import { isLocalPath } from '@/lib/redirect'
 
 interface RootSearch {
@@ -42,7 +44,9 @@ function RootLayout() {
       <Footer />
       <MobileTabBar />
       <AuthDialog />
-      <Toaster />
+      <Toaster position="top-center" />
+      <LiveRegion />
+      <RealtimeSync />
     </div>
   )
 }

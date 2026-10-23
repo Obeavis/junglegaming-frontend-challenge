@@ -120,14 +120,10 @@ function Checkout() {
       <form onSubmit={submit} noValidate className="grid items-start gap-8 lg:grid-cols-[1fr_24rem]">
         <div className="space-y-8">
           <section aria-labelledby="collector" className="space-y-4">
-            <h1 id="collector" className="text-sm font-bold max-md:sr-only">
+            <h1 id="collector" className="text-sm font-bold">
               Perfil do colecionador
             </h1>
-            {wallet && (
-              <div className="max-md:hidden">
-                <WalletFields form={form} />
-              </div>
-            )}
+            {wallet && <WalletFields form={form} />}
           </section>
 
           <section aria-label="Carteira" className="space-y-4">
@@ -152,7 +148,7 @@ function Checkout() {
             )}
           </section>
 
-          <section aria-labelledby="note-title" className="space-y-2 max-md:hidden">
+          <section aria-labelledby="note-title" className="space-y-2">
             <h2 id="note-title" className="text-xs font-bold">
               Observação do colecionador (opcional)
             </h2>
@@ -167,8 +163,8 @@ function Checkout() {
         </div>
 
         <aside aria-label="Revisão do pedido" className="space-y-5">
-          <h2 className="text-sm font-bold max-md:hidden">Seus NFTs</h2>
-          <ul className="space-y-2 max-md:hidden">
+          <h2 className="text-sm font-bold">Seus NFTs</h2>
+          <ul className="space-y-2">
             {cart.items.map((item) => (
               <li key={item.id} className="flex items-center gap-3 rounded-lg bg-card p-2">
                 <img src={item.image.variants[0]?.url ?? item.image.url} alt="" width={36} height={36} className="size-9 rounded-md object-cover" />
@@ -179,9 +175,7 @@ function Checkout() {
             ))}
           </ul>
 
-          <div className="max-md:hidden">
-            <SummaryRows totals={current} />
-          </div>
+          <SummaryRows totals={current} />
 
           <fieldset className="space-y-2">
             <legend className="mb-2 text-sm font-bold">Carteira e rede</legend>
@@ -206,11 +200,6 @@ function Checkout() {
               </label>
             ))}
           </fieldset>
-
-          <p className="flex items-center justify-between text-sm font-bold md:hidden">
-            Total:
-            <span className="text-text-accent">{current ? formatEth(current.total, { minDecimals: 3 }) : '…'}</span>
-          </p>
 
           {changed && (
             <p role="alert" className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm">

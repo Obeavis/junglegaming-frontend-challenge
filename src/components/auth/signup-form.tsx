@@ -64,8 +64,15 @@ function SignupForm({ onDone }: { onDone: () => void }) {
           {errors.root.message}
         </p>
       )}
-      <Button type="submit" size="lg" className="h-11" disabled={signup.isPending}>
-        {signup.isPending ? 'Criando conta…' : 'Criar conta'}
+      <Button type="submit" size="lg" className="h-10 rounded-md" disabled={signup.isPending}>
+        {signup.isPending ? (
+          'Criando conta…'
+        ) : (
+          <>
+            <span className="sm:hidden">Criar perfil</span>
+            <span className="max-sm:hidden">Criar conta</span>
+          </>
+        )}
       </Button>
       <SocialButtons />
     </form>

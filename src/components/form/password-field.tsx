@@ -22,7 +22,7 @@ function PasswordField({ label, error, hideLabel, id, ...props }: Omit<TextField
           type={visible ? 'text' : 'password'}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
-          className="h-11 pr-10"
+          className="h-10 pr-10"
           {...props}
         />
         <button

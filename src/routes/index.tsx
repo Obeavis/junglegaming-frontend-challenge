@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import PageShell from '@/components/layout/page-shell'
+import { catalogSearch } from '@/features/catalog/search'
+import Home from '@/pages/home'
 
 export const Route = createFileRoute('/')({
-  component: () => <PageShell title="NFT Marketplace" />,
+  validateSearch: catalogSearch,
+  component: Home,
 })

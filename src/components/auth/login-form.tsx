@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { loginRequest, type LoginRequest } from '@/domain/auth/schema'
 import { applyApiError } from '@/lib/form-errors'
 import { outOfScope } from '@/lib/out-of-scope'
-import { useLogin } from './mutations'
+import { useLogin } from '@/features/auth/mutations'
 import SocialButtons from './social-buttons'
 
 function LoginForm({ onDone }: { onDone: () => void }) {

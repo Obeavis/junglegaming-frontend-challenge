@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { SquareArrowRightExit, LogOut, Search, ShoppingCart, User, Wallet } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,17 +11,15 @@ import {
 import { useLogout } from '@/features/auth/mutations'
 import { useSession } from '@/features/auth/use-session'
 import { useCartCount } from '@/features/cart/use-cart-count'
-import { outOfScope } from '@/lib/out-of-scope'
-import { cn } from '@/lib/utils'
+import MainNav from './main-nav'
 
 function Header() {
-  const pathname = useLocation({ select: (location) => location.pathname })
   const { data: session } = useSession()
   const count = useCartCount()
   const logout = useLogout()
 
   return (
-    <header className="hidden md:block">
+    <header className="hidden bg-background/80 backdrop-blur-md motion-safe:animate-header-drop md:sticky md:top-0 md:z-40 md:block">
       <div className="mx-auto max-w-300 px-6 pt-6 xl:px-0">
         <div className="flex h-14 items-center justify-between border-b border-border">
           <Link
@@ -31,28 +29,7 @@ function Header() {
             KURIO
           </Link>
 
-          <nav aria-label="Principal" className="flex gap-8">
-            <Link to="/" className={cn(
-                'relative flex h-14 items-center px-1 text-sm outline-none focus-visible:text-text-accent',
-                pathname === '/' &&
-                  'text-text-accent after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-text-accent',
-              )}>
-              Início
-            </Link>
-            <Link to="/" hash="catalogo" className={cn(
-                'relative flex h-14 items-center px-1 text-sm outline-none focus-visible:text-text-accent',
-                pathname !== '/' &&
-                  'text-text-accent after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-text-accent',
-              )}>
-              Mercado
-            </Link>
-            <button type="button" onClick={outOfScope} className="relative flex h-14 items-center px-1 text-sm outline-none focus-visible:text-text-accent">
-              Criadores
-            </button>
-            <button type="button" onClick={outOfScope} className="relative flex h-14 items-center px-1 text-sm outline-none focus-visible:text-text-accent">
-              Aprenda
-            </button>
-          </nav>
+          <MainNav />
 
           <div className="flex items-center gap-4">
             <Link

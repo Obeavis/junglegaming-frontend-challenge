@@ -5,7 +5,7 @@ import TextField from '@/components/form/text-field'
 import { Button } from '@/components/ui/button'
 import { signupForm, signupRequest, type SignupForm as SignupFormValues } from '@/domain/auth/schema'
 import { applyApiError } from '@/lib/form-errors'
-import { useSignup } from './mutations'
+import { useSignup } from '@/features/auth/mutations'
 import SocialButtons from './social-buttons'
 
 function SignupForm({ onDone }: { onDone: () => void }) {

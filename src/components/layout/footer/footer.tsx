@@ -7,7 +7,7 @@ function Footer() {
 		<footer className="mx-auto mt-24 hidden w-full max-w-300 px-6 pb-8 md:block xl:px-0">
 			<FooterHighlights />
 
-			<div className="grid grid-cols-4 items-center justify-items-center gap-6 bg-surface-dark p-8 text-sm">
+			<div className="grid grid-cols-2 gap-y-6 lg:grid-cols-4 items-center justify-items-center gap-6 bg-surface-dark p-8 text-sm">
 				<Link
 					to="/"
 					className="w-fit rounded-sm px-6 text-xs font-bold tracking-widest outline-none focus-visible:ring-3 focus-visible:ring-ring/50"

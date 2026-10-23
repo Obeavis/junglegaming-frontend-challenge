@@ -12,7 +12,7 @@ import {
   type ReviewsPage,
 } from '@/domain/catalog/schema'
 import { MOCK_NOW } from '@/mocks/clock'
-import { getFeatured, trendingIds } from '@/mocks/data/catalog'
+import { getFeatured, getSpotlight, trendingIds } from '@/mocks/data/catalog'
 import { getDb } from '@/mocks/db'
 import { apiError, notFound } from '@/mocks/responses'
 import { getScenario, simulate } from '@/mocks/scenarios'
@@ -74,9 +74,34 @@ function matches(item: Nft, query: CatalogQuery, skip?: Facet) {
   return true
 }
 
-function sortNfts(items: Nft[], sort: CatalogQuery['sort'] = 'recent') {
+function hash(text: string) {
+  let h = 0
+  for (const char of text) h = (h * 31 + char.charCodeAt(0)) >>> 0
+  return h
+}
+
+// ordem fixa e diferente por aba, intercalando as artes para não aparecer a mesma imagem em sequência
+function interleave(items: Nft[]) {
+  const groups = new Map<string, Nft[]>()
+  for (const item of items) groups.set(item.image.url, [...(groups.get(item.image.url) ?? []), item])
+  const queues = [...groups.values()]
+  const result: Nft[] = []
+  while (result.length < items.length) {
+    for (const queue of queues) {
+      const next = queue.shift()
+      if (next) result.push(next)
+    }
+  }
+  return result
+}
+
+function sortNfts(items: Nft[], query: CatalogQuery) {
   const sorted = [...items]
-  switch (sort) {
+  if (!query.sort && (query.trending || query.listedWithinDays)) {
+    const salt = query.trending ? 'trending' : 'new'
+    return interleave(sorted.sort((a, b) => hash(salt + a.id) - hash(salt + b.id)))
+  }
+  switch (query.sort ?? 'recent') {
     case 'price-asc':
       return sorted.sort((a, b) => compareEth(a.price, b.price))
     case 'price-desc':
@@ -89,7 +114,7 @@ function sortNfts(items: Nft[], sort: CatalogQuery['sort'] = 'recent') {
 }
 
 function buildPage(all: Nft[], query: CatalogQuery): CatalogPage {
-  const filtered = sortNfts(all.filter((n) => matches(n, query)), query.sort)
+  const filtered = sortNfts(all.filter((n) => matches(n, query)), query)
   const page = query.page ?? 1
   const start = (page - 1) * PAGE_SIZE
 
@@ -119,6 +144,14 @@ export const catalogHandlers = [
 
     const items = getFeatured(getScenario('featured') === 'empty' ? [] : getDb().nfts).map(({ nft, badge }) => ({ nft: nftSummary.parse(nft), badge }))
     return HttpResponse.json(items)
+  }),
+
+  http.get('/api/nfts/spotlight', async () => {
+    const failure = await simulate('spotlight')
+    if (failure) return failure
+
+    const item = getScenario('spotlight') === 'empty' ? undefined : getSpotlight(getDb().nfts)
+    return item ? HttpResponse.json({ nft: nftSummary.parse(item.nft), badge: item.badge }) : notFound('Destaque')
   }),
 
   http.get('/api/nfts', async ({ request }) => {

@@ -25,6 +25,7 @@ export type ScenarioName = (typeof scenarios)[number]
 export const endpoints = [
   'nfts',
   'featured',
+  'spotlight',
   'detail',
   'reviews',
   'articles',

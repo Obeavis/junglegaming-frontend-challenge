@@ -23,7 +23,7 @@ function OutOfScopeLink({ children }: { children: ReactNode }) {
 
 function FooterColumns() {
   return (
-    <div className="grid grid-cols-4 justify-items-center gap-6 bg-card py-8">
+    <div className="grid grid-cols-2 gap-y-8 lg:grid-cols-4 justify-items-center gap-6 bg-card py-8">
       <nav aria-labelledby="footer-profile" className="grid content-start gap-3">
         <h2 id="footer-profile" className="font-bold">
           Meu perfil

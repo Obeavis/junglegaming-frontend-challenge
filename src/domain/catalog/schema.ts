@@ -14,6 +14,8 @@ export const categories = [
 
 export const networks = ['ethereum', 'polygon', 'solana'] as const
 
+export const rarities = ['common', 'rare', 'epic'] as const
+
 export const sortKeys = ['recent', 'price-asc', 'price-desc', 'rating'] as const
 
 export const edition = z.object({
@@ -32,6 +34,7 @@ export const nftSummary = z.object({
   image,
   category: z.enum(categories),
   network: z.enum(networks),
+  rarity: z.enum(rarities),
   collection: collectionRef,
   price: ethAmount,
   previousPrice: ethAmount.nullable(),
@@ -103,3 +106,4 @@ export type CatalogQuery = z.infer<typeof catalogQuery>
 export type CatalogPage = z.infer<typeof catalogPage>
 export type Category = (typeof categories)[number]
 export type Network = (typeof networks)[number]
+export type Rarity = (typeof rarities)[number]

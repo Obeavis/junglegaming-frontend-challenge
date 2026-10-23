@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { endSession } from '@/features/auth/session'
+import { initMotion } from '@/lib/motion'
 import { queryClient, setSessionLostHandler } from '@/lib/query-client'
 import { withoutAuthParams } from '@/lib/redirect'
 import { routeTree } from './routeTree.gen'
@@ -26,6 +27,8 @@ setSessionLostHandler(() => {
     replace: true,
   })
 })
+
+initMotion()
 
 async function enableMocking() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') return

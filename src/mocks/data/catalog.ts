@@ -108,17 +108,20 @@ interface Row {
   stars: string
   trending?: boolean
   featured?: boolean
+  spotlight?: boolean
   badge?: string
   soldOut?: boolean
   summary?: string
   traits?: Nft['traits']
 }
 
+const rarityOf = { Comum: 'common', Raro: 'rare', Épico: 'epic' } as const
+
 // a ordem define "Listados recentemente"
 const rows: Row[] = [
   {
     name: 'Emerald Ape #042', tokenId: '0042', art: 'emerald', collection: 'kurio-apes', category: 'digital-art', network: 'ethereum',
-    price: '1.19', rarity: 'Raro', stars: '5555455554555545555', trending: true, featured: true, badge: 'Oferta limitada',
+    price: '1.19', rarity: 'Raro', stars: '5555455554555545555', trending: true, featured: true,
     summary: 'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
     traits: [
       { type: 'Acessório', value: 'Óculos' },
@@ -126,9 +129,9 @@ const rows: Row[] = [
       { type: 'Raridade', value: 'Raro' },
     ],
   },
-  { name: 'Sage Nomad #009', tokenId: '0009', art: 'violet', collection: 'sage-nomads', category: 'collectibles', network: 'ethereum', price: '1.69', rarity: 'Comum', stars: '54545', trending: true },
+  { name: 'Sage Nomad #009', tokenId: '0009', art: 'violet', collection: 'sage-nomads', category: 'collectibles', network: 'ethereum', price: '1.69', rarity: 'Comum', stars: '54545', trending: true, featured: true },
   { name: 'Neon Vessel #552', tokenId: '0552', art: 'onyx', collection: 'neon-vessels', category: 'generative', network: 'polygon', price: '1.99', previousPrice: '2.29', rarity: 'Raro', stars: '555435', trending: true },
-  { name: 'Cosmic Bloom #118', tokenId: '0118', art: 'violet', collection: 'kurio-editions', category: '3d-art', network: 'ethereum', price: '1.29', rarity: 'Comum', stars: '4545', featured: true },
+  { name: 'Cosmic Bloom #118', tokenId: '0118', art: 'violet', collection: 'kurio-editions', category: '3d-art', network: 'ethereum', price: '1.29', rarity: 'Comum', stars: '4545', spotlight: true, badge: 'Oferta limitada' },
   { name: 'Violet Nomad #314', tokenId: '0314', art: 'violet', collection: 'sage-nomads', category: 'photography', network: 'solana', price: '1.39', rarity: 'Comum', stars: '45345' },
   { name: 'Ivory Baron #088', tokenId: '0088', art: 'onyx', collection: 'ivory-barons', category: 'digital-art', network: 'ethereum', price: '1.79', rarity: 'Épico', stars: '55545554', trending: true },
   { name: 'Golden Beat #207', tokenId: '0207', art: 'golden', collection: 'golden-signals', category: 'music', network: 'polygon', price: '0.99', rarity: 'Comum', stars: '4545' },
@@ -192,6 +195,7 @@ export function buildCatalog() {
       image: toImage(art.path),
       category: row.category,
       network: row.network,
+      rarity: rarityOf[row.rarity],
       collection: {
         id: row.collection,
         name: collection.name,
@@ -242,12 +246,16 @@ export function buildCatalog() {
 
 export const trendingIds = new Set(rows.filter((r) => r.trending).map((r) => slugify(r.name)))
 
-// usa os NFTs do banco, assim o destaque acompanha preço e estoque
 export function getFeatured(nfts: Nft[]) {
-  return rows
-    .filter((r) => r.featured)
-    .flatMap((r) => {
-      const nft = nfts.find((n) => n.id === slugify(r.name))
-      return nft ? [{ nft, badge: r.badge ?? null }] : []
-    })
+  return rows.filter((r) => r.featured).flatMap((r) => featuredItemOf(nfts, r))
+}
+
+export function getSpotlight(nfts: Nft[]) {
+  const row = rows.find((r) => r.spotlight)
+  return row ? featuredItemOf(nfts, row)[0] : undefined
+}
+
+function featuredItemOf(nfts: Nft[], row: Row) {
+  const nft = nfts.find((n) => n.id === slugify(row.name))
+  return nft ? [{ nft, badge: row.badge ?? null }] : []
 }

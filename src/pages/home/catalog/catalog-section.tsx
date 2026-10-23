@@ -24,7 +24,7 @@ function CatalogSection({ filtersOpen, onFiltersOpenChange }: CatalogSectionProp
       <div className="grid gap-10 lg:grid-cols-[18.75rem_1fr]">
         <aside className="hidden lg:flex lg:flex-col">
           <div className="rounded-lg bg-card p-6">
-            <CatalogFilters facets={data?.facets} />
+            <CatalogFilters facets={data?.facets} failed={isError && !data} />
           </div>
           <FeaturedNft />
         </aside>
@@ -48,7 +48,7 @@ function CatalogSection({ filtersOpen, onFiltersOpenChange }: CatalogSectionProp
 
       {data && <CatalogPagination page={search.page ?? 1} totalPages={data.totalPages} />}
 
-      <FiltersDrawer open={filtersOpen} onOpenChange={onFiltersOpenChange} facets={data?.facets} />
+      <FiltersDrawer open={filtersOpen} onOpenChange={onFiltersOpenChange} facets={data?.facets} failed={isError && !data} />
     </section>
   )
 }

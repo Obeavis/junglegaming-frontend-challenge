@@ -50,7 +50,7 @@ function readQuery(url: URL) {
   })
 }
 
-type Facet = 'categories' | 'networks'
+type Facet = 'categories' | 'networks' | 'price'
 
 // ao contar as opções de um filtro, o próprio filtro fica de fora (senão marcar
 // "music" zeraria o contador das outras categorias)
@@ -65,8 +65,8 @@ function matches(item: Nft, query: CatalogQuery, skip?: Facet) {
   if (skip !== 'networks' && query.networks?.length && !query.networks.includes(item.network)) return false
   if (query.collection && item.collection.id !== query.collection) return false
   if (query.exclude && item.id === query.exclude) return false
-  if (query.minPrice && compareEth(item.price, query.minPrice) < 0) return false
-  if (query.maxPrice && compareEth(item.price, query.maxPrice) > 0) return false
+  if (skip !== 'price' && query.minPrice && compareEth(item.price, query.minPrice) < 0) return false
+  if (skip !== 'price' && query.maxPrice && compareEth(item.price, query.maxPrice) > 0) return false
   if (query.trending && !trendingIds.has(item.id)) return false
   if (query.listedWithinDays) {
     if (Date.parse(item.createdAt) < MOCK_NOW - query.listedWithinDays * DAY_MS) return false
@@ -124,6 +124,15 @@ function buildPage(all: Nft[], query: CatalogQuery): CatalogPage {
     return counts
   }
 
+  // os limites ignoram a própria faixa, senão o slider encolheria ao aplicar o filtro
+  const prices = all.filter((n) => matches(n, query, 'price')).map((n) => n.price)
+  const price = prices.length
+    ? {
+        min: prices.reduce((low, p) => (compareEth(p, low) < 0 ? p : low)),
+        max: prices.reduce((high, p) => (compareEth(p, high) > 0 ? p : high)),
+      }
+    : null
+
   return {
     items: filtered.slice(start, start + PAGE_SIZE).map((n) => nftSummary.parse(n)),
     page,
@@ -133,6 +142,7 @@ function buildPage(all: Nft[], query: CatalogQuery): CatalogPage {
     facets: {
       categories: countBy(categories, 'categories', (n) => n.category),
       networks: countBy(networks, 'networks', (n) => n.network),
+      price,
     },
   }
 }

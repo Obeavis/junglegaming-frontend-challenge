@@ -4,7 +4,7 @@ import { categoryLabels, networkLabels } from '@/features/catalog/labels'
 import PriceFilter from './price-filter'
 import { useCatalogSearch } from '@/features/catalog/use-catalog-search'
 
-function CatalogFilters({ facets }: { facets?: CatalogPage['facets'] }) {
+function CatalogFilters({ facets, failed }: { facets?: CatalogPage['facets']; failed?: boolean }) {
   const { search, update } = useCatalogSearch()
 
   return (
@@ -16,7 +16,7 @@ function CatalogFilters({ facets }: { facets?: CatalogPage['facets'] }) {
         selected={search.categories}
         onChange={(categories) => update({ categories })}
       />
-      <PriceFilter />
+      <PriceFilter range={facets?.price} failed={failed || (!!facets && facets.price === undefined)} />
       <FilterGroup
         title="Rede"
         options={networkLabels}

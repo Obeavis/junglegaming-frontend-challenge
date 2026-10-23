@@ -1,10 +1,10 @@
-import { useId, type ComponentProps } from 'react'
+import { useId, type ComponentProps, type ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 export interface TextFieldProps extends ComponentProps<'input'> {
-  label: string
+  label: ReactNode
   error?: string
   // o desenho mostra só o placeholder; o rótulo continua existindo para leitor de tela
   hideLabel?: boolean

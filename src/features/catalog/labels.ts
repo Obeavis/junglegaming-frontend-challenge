@@ -1,4 +1,5 @@
 import type { Category, CatalogQuery, Network, Rarity } from '@/domain/catalog/schema'
+import type { WalletProvider } from '@/domain/wallets/schema'
 import type { CatalogSearch } from './search'
 
 export const categoryLabels: Record<Category, string> = {
@@ -34,4 +35,10 @@ export const tabLabels: Record<NonNullable<CatalogSearch['tab']>, string> = {
   all: 'Todos os NFTs',
   new: 'Novos lançamentos',
   trending: 'Em alta',
+}
+
+export const providerLabels: Record<WalletProvider, string> = {
+  metamask: 'MetaMask',
+  walletconnect: 'WalletConnect',
+  'coinbase-wallet': 'Coinbase Wallet',
 }

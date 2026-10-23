@@ -36,7 +36,7 @@ function CatalogToolbar({ onOpenFilters }: { onOpenFilters: () => void }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={onOpenFilters} className="max-md:hidden lg:hidden">
+          <Button variant="outline" size="sm" onClick={onOpenFilters} data-filters-trigger className="max-md:hidden lg:hidden">
             <SlidersHorizontal />
             Filtros
           </Button>

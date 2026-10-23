@@ -20,6 +20,7 @@ function MobileSearchBar({ onOpenFilters }: { onOpenFilters: () => void }) {
       <Button
         size="icon-lg"
         aria-label="Abrir filtros"
+        data-filters-trigger
         onClick={onOpenFilters}
         className="size-10 bg-linear-to-br from-primary to-[color-mix(in_oklab,var(--primary),black_30%)]"
       >

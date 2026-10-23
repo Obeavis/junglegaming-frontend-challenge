@@ -59,9 +59,9 @@ function NftGrid({ page, pageSize, isError, isStale, onRetry }: NftGridProps) {
         isStale && 'opacity-60 delay-200',
       )}
     >
-      {page.items.map((nft) => (
+      {page.items.map((nft, index) => (
         <li key={nft.id}>
-          <NftCard nft={nft} />
+          <NftCard nft={nft} priority={index < 2} />
         </li>
       ))}
     </ul>

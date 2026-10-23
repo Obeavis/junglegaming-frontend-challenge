@@ -3,23 +3,25 @@ import { toast } from 'sonner'
 import { addCartItem } from '@/domain/cart/api'
 import { cartKey } from '@/domain/cart/queries'
 import type { CartLine } from '@/domain/cart/schema'
-import { useSession } from '@/features/auth/use-session'
+import { sessionQuery } from '@/domain/auth/queries'
 import { guestCart } from './guest-cart'
 
 export function useAddToCart() {
-  const { data: session } = useSession()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (line: CartLine) => {
+      // quem acabou de recarregar a página pode clicar antes de a sessão chegar: resolve a sessão agora
+      const session = await queryClient.ensureQueryData(sessionQuery).catch(() => null)
       if (!session) {
         guestCart.add(line)
-        return null
+        return { cart: null, userId: null }
       }
-      return addCartItem(line)
+      await queryClient.cancelQueries({ queryKey: cartKey(session.user.id) })
+      return { cart: await addCartItem(line), userId: session.user.id }
     },
-    onSuccess: (cart) => {
-      if (cart && session) queryClient.setQueryData(cartKey(session.user.id), cart)
+    onSuccess: ({ cart, userId }) => {
+      if (cart && userId) queryClient.setQueryData(cartKey(userId), cart)
       toast.success('Adicionado ao carrinho')
     },
     onError: (error) => toast.error(error.message),

@@ -8,7 +8,13 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview --port 4173 --strictPort"
+    "preview": "vite preview --port 4173 --strictPort",
+    "test:e2e": "playwright test",
+    "test:e2e:mobile": "playwright test --project=mobile",
+    "test:e2e:visual:update": "playwright test e2e/visual.spec.ts --update-snapshots",
+    "test:e2e:report": "playwright show-report e2e/report",
+    "lighthouse": "npm run build && node scripts/lighthouse.mjs",
+    "lighthouse:run": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@fontsource/roboto-mono": "5.2.8",
@@ -37,16 +43,19 @@
   },
   "devDependencies": {
     "@eslint/js": "9.37.0",
+    "@playwright/test": "^1.56.1",
     "@tanstack/router-plugin": "1.167.0",
     "@types/big.js": "6.2.2",
     "@types/node": "^22.18.8",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.1",
     "@vitejs/plugin-react": "5.2.0",
+    "chrome-launcher": "^1.2.0",
     "eslint": "9.37.0",
     "eslint-plugin-react-hooks": "5.2.0",
     "eslint-plugin-react-refresh": "0.4.23",
     "globals": "16.4.0",
+    "lighthouse": "^12.8.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.0",
     "vite": "7.3.7"

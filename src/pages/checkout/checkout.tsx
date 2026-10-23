@@ -48,7 +48,10 @@ function Checkout() {
   const [walletId, setWalletId] = useState<string>()
   const [note, setNote] = useState('')
   const [changed, setChanged] = useState(false)
-  const attempt = useRef<{ fingerprint: string; key: string }>(undefined)
+  const attempt = useRef<{ fingerprint: string; key: string; body: CreateOrderRequest }>(undefined)
+  // depois de um timeout o pedido pode já existir: o reenvio repete o mesmo corpo e a mesma chave
+  const unconfirmed = useRef<{ key: string; body: CreateOrderRequest } | null>(null)
+  const [canRetry, setCanRetry] = useState(false)
 
   const wallet = wallets.data?.find((w) => w.id === walletId) ?? wallets.data?.[0]
   const form = useForm<WalletInput>({ resolver: zodResolver(walletInput), values: wallet && toInput(wallet) })
@@ -59,10 +62,17 @@ function Checkout() {
   const current = quote.data
   const hasIssue = !!current?.items.some((item) => item.issue)
 
+  // o total que a pessoa viu e aceitou; se a cotação mudar depois (evento ou resposta do servidor), exige nova revisão
+  const [reviewed, setReviewed] = useState<string>()
+  if (current && reviewed === undefined) setReviewed(current.total)
+  const needsReview = changed || (!!current && reviewed !== undefined && reviewed !== current.total)
+
   const place = useMutation({
     mutationFn: async (values: WalletInput) => {
+      if (unconfirmed.current) return createOrder(unconfirmed.current.body, unconfirmed.current.key)
       if (!current || !wallet) throw new Error('Pedido incompleto.')
-      if (form.formState.isDirty) {
+      const saved = toInput(wallet)
+      if ((Object.keys(values) as (keyof WalletInput)[]).some((field) => values[field] !== saved[field])) {
         await updateWallet(wallet.id, values)
         queryClient.invalidateQueries({ queryKey: walletsKey(userId) })
       }
@@ -73,14 +83,24 @@ function Checkout() {
         note: note.trim() || undefined,
       }
       const fingerprint = JSON.stringify(body)
-      if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, key: crypto.randomUUID() }
+      if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, key: crypto.randomUUID(), body }
       return createOrder(body, attempt.current.key)
     },
     onSuccess: (order) => {
+      unconfirmed.current = null
       queryClient.invalidateQueries({ queryKey: cartKey(userId) })
       navigate({ to: '/orders/$orderId', params: { orderId: order.id } })
     },
     onError: (error) => {
+      if (error instanceof ApiError && error.code === 'TIMEOUT') {
+        unconfirmed.current = attempt.current ? { key: attempt.current.key, body: attempt.current.body } : null
+        setCanRetry(!!unconfirmed.current)
+      } else {
+        // outra resposta do servidor significa que o pedido anterior não foi criado
+        unconfirmed.current = null
+        setCanRetry(false)
+      }
+
       if (error instanceof ApiError && staleCodes.includes(error.code)) {
         setChanged(true)
         quote.refetch()
@@ -98,6 +118,19 @@ function Checkout() {
     setChanged(false)
     place.mutate(values)
   })
+
+  if (!cart.isPending && cart.items.length === 0 && canRetry) {
+    return (
+      <div className="mx-auto flex max-w-300 flex-col items-center gap-4 px-6 py-16 text-center">
+        <p role="alert" className="text-sm">
+          A conexão demorou e o pedido pode já ter sido criado. Confirme de novo: ele não será duplicado.
+        </p>
+        <Button disabled={place.isPending} onClick={() => place.mutate(form.getValues())}>
+          {place.isPending ? 'Enviando pedido…' : 'Confirmar compra'}
+        </Button>
+      </div>
+    )
+  }
 
   if (!cart.isPending && cart.items.length === 0) {
     return (
@@ -201,10 +234,21 @@ function Checkout() {
             ))}
           </fieldset>
 
-          {changed && (
-            <p role="alert" className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm">
-              Os valores ou a disponibilidade mudaram. Revise o total e confirme novamente.
-            </p>
+          {needsReview && (
+            <div role="alert" className="space-y-3 rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm">
+              <p>Os valores ou a disponibilidade mudaram. Revise o total e confirme novamente.</p>
+              <Button
+                type="button"
+                size="sm"
+                disabled={!current || quote.isFetching}
+                onClick={() => {
+                  setReviewed(current?.total)
+                  setChanged(false)
+                }}
+              >
+                Aceitar novos valores
+              </Button>
+            </div>
           )}
           {hasIssue && (
             <p role="alert" className="text-sm text-destructive">
@@ -221,7 +265,7 @@ function Checkout() {
             type="submit"
             size="lg"
             className="h-12 w-full max-md:rounded-full max-md:bg-linear-to-br max-md:from-primary max-md:to-[color-mix(in_oklab,var(--primary),black_30%)] max-md:font-bold md:h-9"
-            disabled={!current || !connected || hasIssue || place.isPending || quote.isFetching}
+            disabled={!current || !connected || hasIssue || needsReview || place.isPending || quote.isFetching}
           >
             {place.isPending ? 'Enviando pedido…' : 'Confirmar compra'}
           </Button>

@@ -11,6 +11,7 @@ function Home() {
 
   return (
     <>
+      <h1 className="sr-only">Kurio, marketplace de NFTs</h1>
       <MobileSearchBar onOpenFilters={() => setFiltersOpen(true)} />
       <Hero />
       <Reveal>
